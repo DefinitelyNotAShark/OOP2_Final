@@ -19,13 +19,13 @@ namespace WPFShippingFinal.ViewModels
 
 
         public uint DestinationZipcode
-        {
-            get { return SelectedShippingService.ShippingLocation.DestinationZipCode; }
-            set { SelectedShippingService.ShippingLocation.DestinationZipCode = value; }
+        {          
+            get { if (SelectedShippingService != null) return SelectedShippingService.ShippingLocation.DestinationZipCode; else return 0; }
+            set { if(SelectedShippingService != null) SelectedShippingService.ShippingLocation.DestinationZipCode = value;}
         }
 
-        public uint NumRefuels { get { return SelectedShippingService.NumRefuels; } }
-        public uint ShippingDistance { get; set; }
+        public uint NumRefuels { get { if (SelectedDeliveryService != null) return SelectedShippingService.NumRefuels; else return 0; } }
+        public uint ShippingDistance { get { if (SelectedShippingService != null) return SelectedShippingService.ShippingDistance; else return 0; } }
 
         public ICommand ShowValues { get; set; }
 
@@ -54,13 +54,12 @@ namespace WPFShippingFinal.ViewModels
         #region string conversion
         private IShippingService ConvertStringToShippingService(string selectedString)//represents the service chosen by the combobox
         {
-            switch (selectedString)
+            if (selectedString.Contains("Default Shipping Service"))
             {
-                case "DefaultShippingService":
-                    IShippingService defaultService = new DefaultShippingService(SelectedDeliveryService, products, location);
-                    return defaultService;
-                default: return null; 
+                IShippingService defaultService = new DefaultShippingService(SelectedDeliveryService, products, location);
+                return defaultService;
             }
+            else return null;
         }
 
         private IDeliveryService ConvertStringToDeliveryService(string selectedString)
@@ -82,29 +81,14 @@ namespace WPFShippingFinal.ViewModels
         }
         #endregion//parsing in the strings to be turned into interface instances
 
-        public IShippingService SelectedShippingService
-        {
-            get {  return ConvertStringToShippingService(selectedShippingServiceString);  }
-            set
-            {
-                IShippingService service = ConvertStringToShippingService(selectedShippingServiceString);
-                service = value;
-                RaisePropertyChanged();//get the different stuff in the things
-            }
-        }
-    
-        public IDeliveryService SelectedDeliveryService//represents the service chosen by the combo box
-        {
-            get {  return ConvertStringToDeliveryService(selectedDeliveryServiceString); }
-            set
-            {
-                IDeliveryService service = ConvertStringToDeliveryService(selectedDeliveryServiceString);
-                service = value;
-            }
-        }
+        public IShippingService SelectedShippingService;
+        public IDeliveryService SelectedDeliveryService;//represents the service chosen by the combo box
 
         public void ExecuteCommandShowValues(object parameter)
         {
+            SelectedShippingService = ConvertStringToShippingService(selectedShippingServiceString);
+            SelectedDeliveryService = ConvertStringToDeliveryService(selectedDeliveryServiceString);
+
             RaisePropertyChanged("DestinationZipcode");
             RaisePropertyChanged("NumRefuels");
             RaisePropertyChanged("ShippingDistance");
@@ -112,10 +96,7 @@ namespace WPFShippingFinal.ViewModels
 
         public bool CanExecuteCommandShowValues(object parameter)//can only do this command if user chose
         {
-            if (SelectedShippingService != null && SelectedDeliveryService != null)
-                return true;
-
-            else return false;
+            return true;
         }
     }
 }

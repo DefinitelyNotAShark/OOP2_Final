@@ -16,7 +16,7 @@
                 <ComboBoxItem Content="Default Shipping Service" ></ComboBoxItem>
             </ComboBox>
             <Label Content="Select Delivery Service"></Label>
-            <ComboBox SelectedValue="{Binding SelectedDeliveryServiceString}">
+            <ComboBox SelectedValuePath="Content" SelectedValue="{Binding SelectedDeliveryServiceString}">
                 <ComboBoxItem Content="Snail Service"></ComboBoxItem>
                 <ComboBoxItem Content="Uncle's Truck"></ComboBoxItem>
             </ComboBox>
