@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFShippingFinal.ViewModels;
 
 namespace WPFShippingFinal.Views
 {
@@ -23,6 +24,11 @@ namespace WPFShippingFinal.Views
         public ShippingServiceControl()
         {
             InitializeComponent();
+
+                InitializeComponent();
+                ShippingServiceViewModel serviceModel = new ShippingServiceViewModel();
+                this.DataContext = serviceModel;
+            
         }
     }
 }
